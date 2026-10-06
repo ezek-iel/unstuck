@@ -1,6 +1,8 @@
 package main
 
-import "database/sql"
+import (
+	"database/sql"
+)
 
 type Question struct {
 	Id      int    `json:"id"`
@@ -53,6 +55,26 @@ func (q *QuestionModel) GetAllQuestions() ([]Question, error) {
 	return questions, nil
 }
 
+func (q *QuestionModel) GetQuestionById(id int) (Question, error) {
+	row := q.db.QueryRow("SELECT * FROM question WHERE question.id = ?", id)
+	
+	var question Question
+	err := row.Scan(&question.Id, &question.Title, &question.Details, &question.Upvotes, &question.Tags)
+
+	return question, err
+}
+
+func (q *QuestionModel) InsertNewQuestion(question Question) error {
+	result, err := q.db.Exec("INSERT INTO question (title, details, tags, upvotes) VALUES (? , ? , ?, 0)", question.Title, question.Details, question.Tags)
+	
+	if err != nil {
+		return err
+	}
+
+	_, err = result.RowsAffected()
+	return err
+} 
+
 func (c *CommentModel) GetAllComments(questionId int)([]Comment, error) {
 	rows, err := c.db.Query("SELECT * FROM comment WHERE comment.question = ?", questionId)
 
@@ -76,4 +98,15 @@ func (c *CommentModel) GetAllComments(questionId int)([]Comment, error) {
 	}
 	
 	return comments, nil
+}
+
+func (c *CommentModel) InsertNewComment(questionId int, comment Comment) error {
+	result, err := c.db.Exec("INSERT INTO comment (question, details) VALUES (?, ?)", questionId, comment.Details)
+
+	if err != nil {
+		return err
+	}
+
+	_, err = result.RowsAffected()
+	return err
 }
