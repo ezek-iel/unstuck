@@ -78,3 +78,15 @@
   --color-verified-ink: #1f857b;    /* Resolved badge text     */
   --color-danger: #d64545;          /* Destructive / Error     */
 }
+
+.btn {
+   @apply inline-flex items-center px-4 py-2 tracking-wide hover:cursor-pointer hover:scale-105 transition-transform rounded-lg;
+}
+
+.btn.link {
+   @apply underline;
+}
+
+.btn.primary {
+   @apply bg-primary text-white font-bold gap-2;
+}
