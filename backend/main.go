@@ -39,6 +39,7 @@ func main() {
 	e.Use(middleware.RequestLogger())
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORS("http://localhost:5173"))
+
 	
 	db, err := sql.Open("sqlite", "local.db")
 	
